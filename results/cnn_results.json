@@ -1,9 +1,9 @@
 {
   "model": "cnn",
   "dataset": "cifar10",
-  "weights": 816938,
-  "accuracy": 0.8436,
-  "precision": 0.8463,
-  "recall": 0.8436,
-  "f1_score": 0.8431
+  "weights": 1072202,
+  "accuracy": 0.7679,
+  "precision": 0.7718,
+  "recall": 0.7679,
+  "f1_score": 0.7673
 }
