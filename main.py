@@ -12,6 +12,7 @@ import tensorflow as tf
 from sklearn.metrics import classification_report, confusion_matrix, precision_score, recall_score, f1_score, accuracy_score
 
 from classifier import (
+    CIFARAdvancedClassifier,
     LogisticRegressionClassifier,
     NeuralNetworkClassifier,
     MNISTClassifier,
@@ -34,6 +35,8 @@ MODEL_TYPES: Dict[str, ModelSpec] = {
     "nn": {"classifier": NeuralNetworkClassifier, "dataset": "mnist"},
     "cifar_mlp": {"classifier": CIFARMLPClassifier, "dataset": "cifar10"},
     "cnn": {"classifier": CIFARCNNClassifier, "dataset": "cifar10"},
+    "cnn_aug": {"classifier": CIFARCNNClassifier, "dataset": "cifar10"},
+    "cnn_advanced": {"classifier": CIFARAdvancedClassifier, "dataset": "cifar10"},
 }
 
 
@@ -115,7 +118,14 @@ def train(args: argparse.Namespace) -> None:
     classifier.model = classifier.build_model()
 
     print(f"Training {model_type} model on {spec['dataset']} …")
-    classifier.train(x_train, y_train, epochs=args.epochs, batch_size=args.batch_size)
+
+    history = classifier.train(x_train, y_train, epochs=args.epochs, batch_size=args.batch_size)
+
+    # Track history of acc, loss, val_acc, val_loss
+    os.makedirs(RESULTS_DIR, exist_ok=True)
+    history_path = os.path.join(RESULTS_DIR, f"{model_type}_history.json")
+    with open(history_path, "w") as f:
+      json.dump(history.history, f)
 
     os.makedirs(MODEL_DIR, exist_ok=True)
     save_path = _model_path(model_type)
